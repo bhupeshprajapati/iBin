@@ -57,7 +57,7 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        return $request;
+       
         $this->validate($request,[
          'title'=> 'required',
          'body'=> 'required',
@@ -87,7 +87,7 @@ class PostsController extends Controller
         $post->cover_image = $fileNameToStore;
         $post->save();
 
-       // return redirect('/posts')->with('success','Post Submitted');
+        return redirect('/posts')->with('success','Post Submitted');
     }
 
     /**
