@@ -2,9 +2,24 @@
 
 @section('content')
     <a href="/posts" class="btn btn-primary btn-sm">Go Back</a>
+    <br><br>
     <div class="card">
     <div class="card-header">
-        <h1>{{$post->title}}</h1>
+        <h1 style="display:inline-block">{{$post->title}}</h1>
+        <form  style="float:right;display:inline-block;" action="{{url('/posts/like_status')}}" method="POST">
+            @csrf
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="_token" value="<?php echo csrf_token();?>">
+            <input type="hidden" name="id" value="{{$post->id}}">
+            <input style="margin-left:5px;" type="submit" class="btn btn-danger btn-md" value="In-validate">
+        </form>
+        <form style="float:right;display:inline-block;"  action="{{url('/posts/like_status')}}" method="POST">
+            @csrf
+            <input type="hidden" name="_method" value="PUT">
+             <input type="hidden" name="_token" value="<?php echo csrf_token();?>">
+             <input type="hidden" name="id" value="{{$post->id}}">
+             <input   type="submit" class="btn btn-success btn-md" value="validate">
+         </form>
     </div>
     <div class="card-body">
     <img style="width:100%" src="/storage/cover_images/{{$post->cover_image}}" alt="cover image">
@@ -16,6 +31,8 @@
     <small>Written on {{$post->created_at}}</small>
     <hr>
     </div>
+    <div class="container">
+       
     @if(!Auth::guest())
         @if(Auth::user()->id== $post->user_id)
             <a style="float:left" href="/posts/{{$post->id}}/edit" class="btn btn-primary">Edit</a>
@@ -23,26 +40,17 @@
                     <input type="hidden" name="_method" value="DELETE">
                     <input type="hidden" name="_token" value="<?php echo csrf_token();?>">
                     <input type="hidden" name="id" value="{{$post->id}}">
-                    <input type="submit" class="btn btn-danger" value="Delete">
+                    <input type="submit" class="btn btn-danger btn-block" value="Delete">
                 </form>
+                <br><br>
         @endif
-        <form style="float:left;padding-left:10px;" action="{{url('/posts/like_status')}}" method="POST">
-           @csrf
-           <input type="hidden" name="_method" value="DELETE">
-            <input type="hidden" name="_token" value="<?php echo csrf_token();?>">
-            <input type="hidden" name="id" value="{{$post->id}}">
-            <input type="submit" class="btn btn-success" value="validate">
-        </form>
-        <form style="float:left;padding-left:10px;" action="{{url('/posts/like_status')}}" method="POST">
-            @csrf
-            <input type="hidden" name="_method" value="DELETE">
-            <input type="hidden" name="_token" value="<?php echo csrf_token();?>">
-            <input type="hidden" name="id" value="{{$post->id}}">
-            <input type="submit" class="btn btn-danger" value="In-validate">
-        </form>
-        <button style="margin-left:10px;" type="submit" class="btn btn-primary" 
+        
+        <br>
+        <button  type="submit" class="btn btn-warning btn-block" 
         data-toggle="collapse" data-target="#view-comments-{{$post->id}}" aria-expanded="false" aria-controls="view-comments-{{$post->id}}">View Comments</button>
-    @endif
+        <br>
+    </div>
+        @endif
     <div class="card-footer">
         <form action="">
         <input type="hidden" name="post_comment" value="{{$post->id}}">
@@ -55,6 +63,7 @@
                 </div>
             </div>
         </form>
+       
         <div class="collapse" id="view-comments-{{$post->id}}">
             
             @if($post->commetns)

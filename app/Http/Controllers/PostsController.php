@@ -27,7 +27,7 @@ class PostsController extends Controller
     {
        
 
-        $posts =  Post::orderBy('created_at','asc')->get();
+        $posts =  Post::orderBy('created_at','desc')->get();
         //$posts =  Post::orderBy('created_at','desc')->take(1)->get();//limiting posts to show
         //return $post = Post::where('title','Post 2')->get();
         //using SQL COMMANDS DIRECTLY
@@ -35,7 +35,7 @@ class PostsController extends Controller
 
        //PAGINATION
 
-       $posts =  Post::orderBy('created_at','asc')->paginate(10);//paginae links are included in index.blade.php ...pagination will kick in after the 10th post
+       $posts =  Post::orderBy('created_at','desc')->paginate(10);//paginae links are included in index.blade.php ...pagination will kick in after the 10th post
         return view('posts.index')->with('posts',$posts);
     }
 
@@ -61,7 +61,10 @@ class PostsController extends Controller
         $this->validate($request,[
          'title'=> 'required',
          'body'=> 'required',
-         'cover_image' => 'image|nullable|max:1999'   
+         'cover_image' => 'image|nullable|max:1999',
+         'location'=> 'required',
+         'post_type'=> 'required',
+         'area'=> 'required',     
         ]);
         //Handle file upload
         if($request->hasFile('cover_image')){
@@ -81,6 +84,9 @@ class PostsController extends Controller
         }
         //Create Post
         $post = new Post;
+        $post->area= $request->input('area');
+        $post->post_type =$request->input('post_type');
+        $post->location = $request->input('location');
         $post->title = $request->input('title');
         $post->body =$request ->input('body');
         $post->user_id = auth()->user()->id;
@@ -141,10 +147,14 @@ class PostsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {//return $request;
         $this->validate($request,[
             'title'=> 'required',
-            'body'=> 'required',  
+            'body'=> 'required',
+            'cover_image' => 'image|nullable|max:1999',
+            'location'=> 'required',
+            'post_type'=> 'required',
+            'area'=> 'required',  
            ]);
 
            
@@ -165,6 +175,9 @@ class PostsController extends Controller
            //Update Post
            $id = $request->input('id');
            $post = Post::find($id);
+           $post->area= $request->input('area');
+           $post->post_type =$request->input('post_type');
+           $post->location = $request->input('location');
            $post->title = $request->input('title');
            $post->body =$request ->input('body');
            if($request->hasFile('cover_image')){
